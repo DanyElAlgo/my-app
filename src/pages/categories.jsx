@@ -9,6 +9,7 @@ export default function Categories({ session }) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { user } = session;
+
     async function fetchCategories() {
       const { data, error } = await supabase
         .from("categories")
@@ -32,6 +33,53 @@ export default function Categories({ session }) {
       .from("categories")
       .insert([newCategory])
       .single();
+    if (error) {
+      console.warn(error);
+    } else if (data) {
+      setCategories((prev) => [...prev, data]);
+    }
+    await fetchCategories();
+    setLoading(false);
+  }
+
+  async function handleSubmit(event){
+    event.preventDefault();
+    const name = event.target.elements.name.value;
+    if (name) {
+      await createCategory(name);
+      event.target.reset();
+    }
+  }
+
+  async function handleDelete(id){
+    setLoading(true);
+    const { error } = await supabase
+      .from("categories")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+    if (error) {
+      console.warn(error);
+    } else {
+      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+    }
+    setLoading(false);
+  }
+
+  async function handleUpdate(id, name){
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("categories")
+      .update({ name: name })
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+    if (error) {
+      console.warn(error);
+    } else if (data) {
+      setCategories((prev) => prev.map((cat) => cat.id === id ? data : cat));
+    }
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -39,27 +87,18 @@ export default function Categories({ session }) {
       setLoading(true);
       await fetchCategories();
       setLoading(false);
-    }});
+    }
+    fetchData();
+  }, [user.id]);
 
-    // Conseguir categorías de la base de datos según el usuario
-    // Al inicio de la página hay un input para crear nuevas categorías
-    // Las categorías pueden editarse o eliminarse
   return <div className="row flex flex-center">
     <div className="col-6 form-widget">
       <h1 className="header">Categories</h1>
-      <p className="description">This is a placeholder for your Todo application.</p>
+      <p className="description">Create and manage your categories here, then use them for your todos.</p>
       <div className="form-widget">
         <h2>Create Category</h2>
         <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const name = e.target.elements.name.value;
-            if (name) {
-              await createCategory(name);
-              e.target.reset();
-              await fetchCategories();
-            }
-          }}
+          onSubmit={handleSubmit}
         >
           <input
             type="text"
@@ -80,20 +119,7 @@ export default function Categories({ session }) {
               <CategoryItem
                 key={category.id}
                 item={category}
-                deleteItem={async (id) => {
-                  setLoading(true);
-                  const { error } = await supabase
-                    .from("categories")
-                    .delete()
-                    .eq("id", id)
-                    .eq("user_id", user.id);
-                  if (error) {
-                    console.warn(error);
-                  } else {
-                    setCategories((prev) => prev.filter((cat) => cat.id !== id));
-                  }
-                  setLoading(false);
-                }}/>
+                deleteItem={handleDelete}/>
             ))
           )}
           </div>

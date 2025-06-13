@@ -7,7 +7,7 @@ import Account from './pages/account'
 import Todo from './pages/todo'
 import Categories from './pages/categories'
 
-function App() {
+export default function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
 
