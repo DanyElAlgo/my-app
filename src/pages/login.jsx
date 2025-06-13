@@ -18,7 +18,7 @@ export default function Login() {
       alert(error.error_description || error.message);
     } else {
       alert("Login successful! Redirecting to your account.");
-      navigate("/");
+      navigate("/todo");
     }
     setLoading(false);
   };
