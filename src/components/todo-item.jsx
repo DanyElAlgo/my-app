@@ -1,8 +1,13 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import TodoUpdateModal from "./todo-update-modal";
 
-export default function TodoItem({item, updateItem, deleteItem, categories}) {
+export default function TodoItem({ item, updateItem, deleteItem, categories }) {
   const [showModal, setShowModal] = useState(false);
+  const [toDelete, setToDelete] = useState(false);
+
+  useEffect(() => {
+    setToDelete(false);
+  }, []);
 
   return (
     <div key={item.id} className="item">
@@ -13,9 +18,32 @@ export default function TodoItem({item, updateItem, deleteItem, categories}) {
       <button className="button block" onClick={() => setShowModal(true)}>
         Update Item
       </button>
-      <button className="button block" onClick={() => deleteItem(item.id)}>
-        Delete Item
-      </button>
+      {!toDelete ? (
+        <>
+          <button
+            className="button block"
+            onClick={() => {
+              setToDelete(true);
+            }}
+          >
+            Delete Item
+          </button>
+        </>
+      ) : (
+        <>
+          <label>Are you sure to delete "{item.title}"</label>
+          <div className="flex">
+            <button onClick={() => deleteItem(item.id)}>Delete</button>
+            <button
+              onClick={() => {
+                setToDelete(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
 
       {showModal && (
         <TodoUpdateModal
