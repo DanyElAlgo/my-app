@@ -93,25 +93,33 @@ export default function Categories({ session }) {
 
   return <div className="row flex flex-center">
     <div className="col-6 form-widget">
-      <h1 className="header">Categories</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center"
+      >Categories</h1>
       <p className="description">Create and manage your categories here, then use them for your todos.</p>
       <div className="form-widget">
-        <h2>Create Category</h2>
+        <h2
+        className="text-2xl font-bold mb-4"
+        >Create a new Category</h2>
         <form
           onSubmit={handleSubmit}
         >
           <input
+            className="form-input m-2 block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             type="text"
             name="name"
             placeholder="Category Name"
             required
           />
-          <button type="submit" className="button primary">
+          <button type="submit" 
+          className="m-2 button block bg-blue-900 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-blue-800 dark:hover:bg-blue-600"
+          >
             Create Category
           </button>
         </form>
-        <h2>Categories List</h2>
-        <div className="categories-list">
+        <h2
+        className="text-center text-2xl font-bold mb-4"
+        >Categories list</h2>
+        <div className="flex justify-center">
           {loading ? (
             <p>Loading...</p>
           ) : (
