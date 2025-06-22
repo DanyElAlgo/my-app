@@ -5,6 +5,7 @@ export default function TodoUpdateModal({ item, categories, onClose, onUpdate })
   const [formData, setFormData] = useState({
     title: item.title,
     description: item.description,
+    is_completed: item.is_completed,
     category_fk: item.category_fk
   });
 
@@ -18,8 +19,8 @@ export default function TodoUpdateModal({ item, categories, onClose, onUpdate })
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>Update Todo Item</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -53,6 +54,16 @@ export default function TodoUpdateModal({ item, categories, onClose, onUpdate })
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
+          </div>
+          <div className='form-group'>
+            <label>Status:</label>
+            <select
+              className="form-select block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              value={formData.is_completed ? 'completed' : 'not_completed'}
+              onChange={(e) => setFormData({...formData, is_completed: e.target.value === 'completed'})}>
+                <option value="not_completed">Not Completed</option>
+                <option value="completed">Completed</option>
+              </select>
           </div>
           <div className="modal-actions">
             <button type="submit" 

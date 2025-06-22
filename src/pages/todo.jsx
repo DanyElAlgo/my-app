@@ -56,6 +56,59 @@ export default function Todo({ session }) {
     });
   }
 
+  async function handleDelete(id) {
+    const { error } = await supabase
+      .from("todos")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      console.warn(error);
+    } else {
+      setItemList((prev) => prev.filter((i) => i.id !== id));
+    }
+  }
+  
+  async function handleUpdate(updatedItem) {
+    const { category, ...itemToUpdate } = updatedItem;
+    const { data, error } = await supabase
+      .from("todos")
+      .update(itemToUpdate)
+      .eq("id", updatedItem.id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.warn(error);
+    } else if (data) {
+      data.category =
+        categories.find((cat) => cat.id === data.category_fk)
+          ?.name || "Uncategorized";
+      setItemList((prev) =>
+        prev.map((i) => (i.id === updatedItem.id ? data : i))
+      );
+    }
+  }
+
+  async function handleTick (newStatus, id){
+    const { data, error } = await supabase
+      .from("todos")
+      .update({ is_completed: newStatus })
+      .eq("id", id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.warn(error);
+    } else if (data) {
+      data.category =
+        categories.find((cat) => cat.id === data.category_fk)?.name ||
+        "Uncategorized";
+      setItemList((prev) =>
+        prev.map((i) => (i.id === data.id ? data : i))
+      );
+    }
+  }
+
   useEffect(() => {
     async function fetchItems() {
       setLoading(true);
@@ -187,42 +240,17 @@ export default function Todo({ session }) {
               </>
             )}
             <div className="flex flex-row flex-wrap justify-center">
-              {itemList.map((item) => (
+              {itemList
+              .slice()
+              .sort((a, b) => a.id - b.id)
+              .map((item) => (
                 <TodoItem
                   key={item.id}
                   item={item}
                   categories={categories}
-                  updateItem={async (updatedItem) => {
-                    const { category, ...itemToUpdate } = updatedItem;
-                    const { data, error } = await supabase
-                      .from("todos")
-                      .update(itemToUpdate)
-                      .eq("id", updatedItem.id)
-                      .select("*")
-                      .single();
-
-                    if (error) {
-                      console.warn(error);
-                    } else if (data) {
-                      data.category =
-                        categories.find((cat) => cat.id === data.category_fk)
-                          ?.name || "Uncategorized";
-                      setItemList((prev) =>
-                        prev.map((i) => (i.id === updatedItem.id ? data : i))
-                      );
-                    }
-                  }}
-                  deleteItem={async (id) => {
-                    const { error } = await supabase
-                      .from("todos")
-                      .delete()
-                      .eq("id", id);
-                    if (error) {
-                      console.warn(error);
-                    } else {
-                      setItemList((prev) => prev.filter((i) => i.id !== id));
-                    }
-                  }}
+                  updateItem={handleUpdate}
+                  deleteItem={handleDelete}
+                  tickItem={handleTick}
                 />
               ))}
             </div>

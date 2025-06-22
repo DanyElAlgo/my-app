@@ -119,7 +119,7 @@ export default function Categories({ session }) {
         <h2
         className="text-center text-2xl font-bold mb-4"
         >Categories list</h2>
-        <div className="flex justify-center">
+        <div className="flex justify-center flex-wrap w-full">
           {loading ? (
             <p>Loading...</p>
           ) : (
@@ -127,7 +127,9 @@ export default function Categories({ session }) {
               <CategoryItem
                 key={category.id}
                 item={category}
-                deleteItem={handleDelete}/>
+                deleteItem={handleDelete}
+                updateItem={handleUpdate}
+                />
             ))
           )}
           </div>

@@ -32,13 +32,12 @@ export default function App() {
     <BrowserRouter>
       <div>
         <Routes>
-          <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-          <Route path="/signup" element={!session ? <Register /> : <Navigate to="/" />} />
+          <Route path="/login" element={!session ? <Login /> : <Navigate to="/todo" />} />
+          <Route path="/signup" element={!session ? <Register /> : <Navigate to="/todo" />} />
           <Route element={<Layout/>}>
-            <Route path="/" element={session ? <Account key={session.user.id} session={session} /> : <Navigate to="/login" />} />
             <Route path="/todo" element={session ? <Todo key={session.user.id} session={session} /> : <Navigate to="/login" />} />
             <Route path="/categories" element={session ? <Categories key={session.user.id} session={session} /> : <Navigate to="/login" />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/todo" />} />
           </Route>
         </Routes>
       </div>

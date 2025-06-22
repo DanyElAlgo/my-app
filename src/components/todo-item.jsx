@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TodoUpdateModal from "./todo-update-modal";
 import "../index.css";
 
-export default function TodoItem({ item, updateItem, deleteItem, categories }) {
+export default function TodoItem({ item, updateItem, deleteItem, categories, tickItem }) {
   const [showModal, setShowModal] = useState(false);
   const [toDelete, setToDelete] = useState(false);
 
@@ -16,7 +16,8 @@ export default function TodoItem({ item, updateItem, deleteItem, categories }) {
       <p>{item.description}</p>
       <p>Category: {item.category}</p>
       <p>Creation Date: {new Date(item.creation_date).toLocaleDateString()}</p>
-      <button className="m-1 button block bg-blue-900 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-blue-800 dark:hover:bg-blue-600" onClick={() => setShowModal(true)}>
+      <button className="m-1 button block bg-blue-900 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-blue-800 dark:hover:bg-blue-600" 
+      onClick={() => setShowModal(true)}>
         Update Item
       </button>
       {!toDelete ? (
@@ -47,11 +48,13 @@ export default function TodoItem({ item, updateItem, deleteItem, categories }) {
         </>
       )}
       {item.is_completed? (
-      <button className="m-1 button block bg-green-900 hover:bg-green-700 text-white py-2 px-4 rounded dark:bg-green-800 dark:hover:bg-green-600" onClick={() => setShowModal(true)}>
+      <button className="m-1 button block bg-green-900 hover:bg-green-700 text-white py-2 px-4 rounded dark:bg-green-800 dark:hover:bg-green-600" 
+      onClick={() => tickItem(false, item.id)}>
         DONE
       </button>
       ) : (
-      <button className="m-1 button block bg-gray-900 hover:bg-gray-700 text-white py-2 px-4 rounded dark:bg-gray-700 dark:hover:bg-gray-600" onClick={() => setShowModal(true)}>
+      <button className="m-1 button block bg-gray-900 hover:bg-gray-700 text-white py-2 px-4 rounded dark:bg-gray-700 dark:hover:bg-gray-600" 
+      onClick={() => tickItem(true, item.id)}>
         NOT DONE
       </button>
       )}
