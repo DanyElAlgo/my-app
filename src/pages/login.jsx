@@ -26,6 +26,10 @@ export default function Login() {
 
   useEffect(() => {
     const match = window.matchMedia("(prefers-color-scheme: dark)");
+    // window.matchMedia is not a function in JSDOM, so we need to check if it exists
+    if (typeof match.addEventListener !== "function") {
+      return;
+    }
     setIsDark(match.matches);
 
     const handler = (e) => setIsDark(e.matches);
